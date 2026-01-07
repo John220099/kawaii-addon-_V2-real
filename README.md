@@ -1,4 +1,4 @@
-# Kawaii Addon (v2 Real) 🐱💖
+# Kawaii Addon v2 Real
 
 **Repository:** [kawaii-addon-_V2-real]([https://github.com/yourusername/kawaii-addon-_V2-real](https://github.com/John220099/kawaii-addon-_V2-real))  
 **By:** [Turtlegamer_](https://github.com/turtlegamerw) & [john220099](https://github.com/john220099)
