@@ -36,6 +36,6 @@ To build the addon locally:
 
 
 ```bash
-git clone https://github.com/John220099/kawaii-addon-_V2-real.git
+git clone https://github.com/turtlegamerw/kawaii-addon-_V2-real.git
 cd kawaii-addon-_V2-real
 ./gradlew build
