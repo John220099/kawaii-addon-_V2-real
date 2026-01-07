@@ -1,4 +1,4 @@
-# Kawaii Addon v2 Real
+9# Kawaii Addon v2 Real
 
 **Repository:** [kawaii-addon-_V2-real](https://github.com/turtlegamerw/kawaii-addon-_V2-real)
 
@@ -40,3 +40,12 @@ To build the addon locally:
 git clone https://github.com/turtlegamerw/kawaii-addon-_V2-real.git
 cd kawaii-addon-_V2-real
 ./gradlew build
+
+---
+
+## Credits
+
+**meteor client devs**
+
+**fabric devs**
+
