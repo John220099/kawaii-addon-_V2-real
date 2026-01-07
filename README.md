@@ -11,6 +11,7 @@ A **Meteor Client addon** for Minecraft 1.21.8 that displays **catgirl images** 
 ## Features 🌟
 
 - Displays **random catgirl images** in your HUD
+- coordleaker command for lolz
 - more SOON~ish
 
 ---
