@@ -1,5 +1,6 @@
 plugins {
     id("fabric-loom") version "1.11-SNAPSHOT"
+    kotlin("jvm")
 }
 
 base {
@@ -17,6 +18,7 @@ repositories {
         name = "meteor-maven-snapshots"
         url = uri("https://maven.meteordev.org/snapshots")
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -27,6 +29,7 @@ dependencies {
 
     // Meteor
     modImplementation("meteordevelopment:meteor-client:${properties["minecraft_version"] as String}-SNAPSHOT")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks {
@@ -54,8 +57,6 @@ tasks {
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
     }
 
     withType<JavaCompile> {
@@ -64,4 +65,7 @@ tasks {
         options.compilerArgs.add("-Xlint:deprecation")
         options.compilerArgs.add("-Xlint:unchecked")
     }
+}
+kotlin {
+    jvmToolchain(21)
 }
