@@ -24,6 +24,7 @@ public class KawaiiAddon extends MeteorAddon {
         // Modules
         Modules.get().add(new ModuleChinaHat());
         Modules.get().add(new ModuleCatFacts());
+        Modules.get().add(new HeadPatTurn());
 
         // Commands
         Commands.add(new CommandCuddle());

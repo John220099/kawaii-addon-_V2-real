@@ -15,9 +15,9 @@ public class ModuleCatFacts extends Module {
     private final Setting<Integer> delay = sgGeneral.add(new IntSetting.Builder()
         .name("delay")
         .description("delay :3")
-        .defaultValue(100)
-        .min(20)
-        .sliderMax(1000)
+        .defaultValue(200)
+        .min(200)
+        .sliderMax(10000)
         .build()
     );
 
