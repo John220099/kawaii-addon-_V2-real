@@ -1,6 +1,5 @@
 plugins {
     id("fabric-loom") version "1.11-SNAPSHOT"
-    kotlin("jvm")
 }
 
 base {
@@ -29,7 +28,6 @@ dependencies {
 
     // Meteor
     modImplementation("meteordevelopment:meteor-client:${properties["minecraft_version"] as String}-SNAPSHOT")
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks {
@@ -65,7 +63,4 @@ tasks {
         options.compilerArgs.add("-Xlint:deprecation")
         options.compilerArgs.add("-Xlint:unchecked")
     }
-}
-kotlin {
-    jvmToolchain(21)
 }

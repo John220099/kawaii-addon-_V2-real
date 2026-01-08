@@ -2,8 +2,8 @@ package kawaii.addon.v2.real;
 
 import kawaii.addon.v2.real.commands.*;
 import kawaii.addon.v2.real.hud.*;
+import kawaii.addon.v2.real.modules.*;
 import com.mojang.logging.LogUtils;
-import meteordevelopment.meteorclient.addons.GithubRepo;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
 import meteordevelopment.meteorclient.commands.Commands;
 import meteordevelopment.meteorclient.systems.hud.Hud;
@@ -14,14 +14,16 @@ import org.slf4j.Logger;
 
 public class KawaiiAddon extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("Example");
-    public static final HudGroup HUD_GROUP = new HudGroup("Example");
+    public static final Category CATEGORY = new Category("Kawaii");
+    public static final HudGroup HUD_GROUP = new HudGroup("Kawaii");
 
     @Override
     public void onInitialize() {
-        LOG.info("Initializing Meteor Addon Template");
+        LOG.info("Loading kawaii-addon-_V2-real...");
 
         // Modules
+        Modules.get().add(new ModuleChinaHat());
+        Modules.get().add(new ModuleCatFacts());
 
         // Commands
         Commands.add(new CommandCuddle());
@@ -38,10 +40,5 @@ public class KawaiiAddon extends MeteorAddon {
     @Override
     public String getPackage() {
         return "kawaii.addon.v2.real";
-    }
-
-    @Override
-    public GithubRepo getRepo() {
-        return new GithubRepo("MeteorDevelopment", "meteor-addon-template");
     }
 }
