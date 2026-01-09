@@ -16,6 +16,7 @@ public class CommandCuddle extends Command {
             MinecraftClient client = MinecraftClient.getInstance();
 
             if (client.player != null) {
+                //if ur seeing this is for CoOrdLeakerCommand this doesn't execute on its own!
                 int x = client.player.getBlockX();
                 int y = client.player.getBlockY();
                 int z = client.player.getBlockZ();
