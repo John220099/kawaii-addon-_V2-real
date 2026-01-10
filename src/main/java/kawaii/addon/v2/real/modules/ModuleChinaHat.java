@@ -16,6 +16,12 @@ import net.minecraft.util.math.Vec3d;
 import org.joml.Matrix4f;
 import java.lang.reflect.Field;
 
+/*
+ * rendering is broken kinda only works in 1.21.8!
+ * mojang removed a rendering thing.
+ */
+
+/*
 public class ModuleChinaHat extends Module {
     private final SettingGroup sg = settings.getDefaultGroup();
 
@@ -110,9 +116,9 @@ public class ModuleChinaHat extends Module {
         return lerp(tickDelta, prev, current);
     }
 
-    /*
+    *
      * this is kinda broken when swimming!
-     */
+     *
     @EventHandler
     private void onRender3D(Render3DEvent event) {
         MinecraftClient mc = MinecraftClient.getInstance();
@@ -227,3 +233,5 @@ public class ModuleChinaHat extends Module {
         matrices.pop();
     }
 }
+
+ */
