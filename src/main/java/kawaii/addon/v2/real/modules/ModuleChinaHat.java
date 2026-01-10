@@ -70,6 +70,7 @@ public class ModuleChinaHat extends Module {
         .build()
     );
 
+    //TODO fix this got removed lol
     private static final RenderLayer RENDER_LAYER = RenderLayer.getDebugFilledBox();
 
     public ModuleChinaHat() {
@@ -151,9 +152,9 @@ public class ModuleChinaHat extends Module {
         final double tipY = basePos.y + playerHeight + (0.5 * radius);
 
         final Camera camera = mc.gameRenderer.getCamera();
-        final double camX = camera.getPos().x;
-        final double camY = camera.getPos().y;
-        final double camZ = camera.getPos().z;
+        final double camX = camera.getCameraPos().x;
+        final double camY = camera.getCameraPos().y;
+        final double camZ = camera.getCameraPos().z;
 
         MatrixStack matrices = event.matrices;
 
