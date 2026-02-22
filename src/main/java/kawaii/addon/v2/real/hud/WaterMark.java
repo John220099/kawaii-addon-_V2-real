@@ -34,7 +34,7 @@ public class WaterMark extends HudElement {
     @Override
     public void render(HudRenderer renderer) {
         int n = size.get();
-        setSize(244 * n, 122 * n);
+        setSize(160 * n, 64 * n);
         renderer.texture(TEXTURE, x, y, getWidth(), getHeight(), Color.WHITE);
     }
 }

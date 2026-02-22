@@ -29,6 +29,7 @@ public class KawaiiAddon extends MeteorAddon {
         Modules.get().add(new Cape());
         Modules.get().add(new MapCensor());
         Modules.get().add(new Troll());
+        Modules.get().add(new RockBreaker());
 
         // Commands
         Commands.add(new Cuddle());
