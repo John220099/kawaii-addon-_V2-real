@@ -6,6 +6,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.meteorclient.events.world.TickEvent;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.world.World;
 
 public class RockBreaker extends Module {
 
@@ -20,7 +21,7 @@ public class RockBreaker extends Module {
         if (mc.player != null) {
             int y = mc.player.getBlockY();
 
-            if (y == 5) {
+            if (mc.player.getWorld().getRegistryKey() == World.NETHER & y == 5) {
                 assert client.player != null;
                 String currentPrefix = Config.get().prefix.get();
                 String message = String.format(currentPrefix + "vclip -15");
