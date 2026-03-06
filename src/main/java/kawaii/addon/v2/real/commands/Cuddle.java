@@ -17,9 +17,10 @@ public class Cuddle extends Command {
 
             if (client.player != null) {
                 //if ur seeing this is for CoOrdLeakerCommand this doesn't execute on its own!
-                int x = client.player.getBlockX();
-                int y = client.player.getBlockY();
-                int z = client.player.getBlockZ();
+                assert mc.player != null;
+                int x = (int) Math.floor(mc.player.getX());
+                int y = (int) Math.floor(mc.player.getY());
+                int z = (int) Math.floor(mc.player.getZ());
                 String message = String.format("Cuddle with me at coords owo: X: %d, Y: %d, Z: %d", x, y, z);
                 client.player.networkHandler.sendChatMessage(message);
             } else {

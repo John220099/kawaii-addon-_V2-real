@@ -19,7 +19,7 @@ public class RockBreaker extends Module {
     @EventHandler
     private void onTick(TickEvent.Post event) {
         if (mc.player != null) {
-            int y = mc.player.getBlockY();
+            int y = (int) Math.floor(mc.player.getY());
 
             if (mc.player.getWorld().getRegistryKey() == World.NETHER & y == 5) {
                 assert client.player != null;
