@@ -1,6 +1,7 @@
 package kawaii.addon.v2.real.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import kawaii.addon.v2.real.util.PlayerPosition;
 import meteordevelopment.meteorclient.commands.Command;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
@@ -14,19 +15,15 @@ public class Cuddle extends Command {
     public void build(LiteralArgumentBuilder<CommandSource> builder) {
         builder.executes(context -> {
             MinecraftClient client = MinecraftClient.getInstance();
+            PlayerPosition pos = new PlayerPosition(mc);
 
             if (client.player != null) {
                 //if ur seeing this is for CoOrdLeakerCommand this doesn't execute on its own!
                 assert mc.player != null;
-                int x = (int) Math.floor(mc.player.getX());
-                int y = (int) Math.floor(mc.player.getY());
-                int z = (int) Math.floor(mc.player.getZ());
-                String message = String.format("Cuddle with me at coords owo: X: %d, Y: %d, Z: %d", x, y, z);
-                client.player.networkHandler.sendChatMessage(message);
+                mc.player.networkHandler.sendChatMessage(String.format("Cuddle with me at coords owo: X: %d, Y: %d, Z: %d in the %s", pos.getX(), pos.getY(), pos.getZ(), pos.getDimension()));
             } else {
                 error("skill issue thb.");
             }
-
             return SINGLE_SUCCESS;
         });
     }
