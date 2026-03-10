@@ -13,13 +13,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AntiWeb extends Module {
 
     public enum SwapMode {
         Normal,
-        Silent,
+        Silent, //TODO: fix breaking on some servers.
         None
     }
 
@@ -48,7 +50,8 @@ public class AntiWeb extends Module {
         .build()
     );
 
-    private final List<BlockPos> mined = new ArrayList<>();
+    private static final int RETRY_COOLDOWN = 10;
+    private final Map<BlockPos, Integer> minedCooldowns = new HashMap<>();
     private boolean swapped = false;
 
     public AntiWeb() {
@@ -57,7 +60,7 @@ public class AntiWeb extends Module {
 
     @Override
     public void onDeactivate() {
-        mined.clear();
+        minedCooldowns.clear();
         restoreIfSwapped();
     }
 
@@ -65,19 +68,10 @@ public class AntiWeb extends Module {
     private void onTick(TickEvent.Pre event) {
         if (mc.player == null || mc.world == null || mc.getNetworkHandler() == null) return;
 
-        double r = range.get();
-        Box bodyBox = mc.player.getBoundingBox().expand(r);
-        Box headBox = new Box(
-            mc.player.getX() - r, mc.player.getEyeY() - r, mc.player.getZ() - r,
-            mc.player.getX() + r, mc.player.getEyeY() + r, mc.player.getZ() + r
-        );
+        minedCooldowns.replaceAll((pos, ticks) -> ticks - 1);
+        minedCooldowns.entrySet().removeIf(e -> e.getValue() <= 0);
 
-        List<BlockPos> webs = new ArrayList<>();
-        BlockPos.stream(bodyBox.union(headBox))
-            .filter(pos -> mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB)
-            .forEach(pos -> webs.add(pos.toImmutable()));
-
-        mined.removeIf(pos -> !webs.contains(pos));
+        List<BlockPos> webs = findWebs();
 
         if (webs.isEmpty()) {
             restoreIfSwapped();
@@ -99,13 +93,13 @@ public class AntiWeb extends Module {
         int broke = 0;
 
         for (BlockPos pos : webs) {
-            if (mined.contains(pos)) continue;
-            Direction face = getClosestFace(pos);
+            if (minedCooldowns.containsKey(pos)) continue;
 
+            Direction face = getClosestFace(pos);
             mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, face));
             mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, pos, face));
 
-            mined.add(pos);
+            minedCooldowns.put(pos, RETRY_COOLDOWN);
             broke++;
         }
 
@@ -113,6 +107,35 @@ public class AntiWeb extends Module {
             restoreIfSwapped();
             if (notify.get()) info("Broke " + broke + " cobweb(s).");
         }
+    }
+
+    private List<BlockPos> findWebs() {
+        List<BlockPos> webs = new ArrayList<>();
+        double r = range.get();
+
+        Box bodyBox = mc.player.getBoundingBox().expand(r);
+        Box headBox = new Box(
+            mc.player.getX() - r, mc.player.getEyeY() - r, mc.player.getZ() - r,
+            mc.player.getX() + r, mc.player.getEyeY() + r, mc.player.getZ() + r
+        );
+
+        List<BlockPos> occupied = List.of(
+            BlockPos.ofFloored(mc.player.getX(), mc.player.getY(), mc.player.getZ()),
+            BlockPos.ofFloored(mc.player.getX(), mc.player.getY() + 0.5, mc.player.getZ()),
+            BlockPos.ofFloored(mc.player.getX(), mc.player.getEyeY(), mc.player.getZ())
+        );
+
+        BlockPos.stream(bodyBox.union(headBox))
+            .filter(pos -> mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB)
+            .forEach(pos -> webs.add(pos.toImmutable()));
+
+        for (BlockPos pos : occupied) {
+            if (mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB && !webs.contains(pos)) {
+                webs.add(pos);
+            }
+        }
+
+        return webs;
     }
 
     private void restoreIfSwapped() {
