@@ -12,7 +12,7 @@ public class SwordSwap extends Module {
 
     public enum SwapMode {
         Normal,
-        Silent
+        Silent //TODO: fix silent swap it breaks on some servers!
     }
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();

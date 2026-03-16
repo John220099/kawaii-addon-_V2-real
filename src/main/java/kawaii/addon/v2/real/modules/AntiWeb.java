@@ -8,6 +8,7 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.Blocks;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
+import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -21,7 +22,7 @@ public class AntiWeb extends Module {
 
     public enum SwapMode {
         Normal,
-        Silent, //TODO: fix breaking on some servers.
+        Silent,
         None
     }
 
@@ -43,6 +44,15 @@ public class AntiWeb extends Module {
         .build()
     );
 
+    private final Setting<Double> RETRY_COOLDOWN = sgGeneral.add(new DoubleSetting.Builder()
+        .name("retry-cooldown")
+        .description("Retries amount.")
+        .defaultValue(10)
+        .min(1)
+        .sliderMax(20)
+        .build()
+    );
+
     private final Setting<Boolean> notify = sgGeneral.add(new BoolSetting.Builder()
         .name("notify")
         .description("snitches.")
@@ -50,7 +60,7 @@ public class AntiWeb extends Module {
         .build()
     );
 
-    private static final int RETRY_COOLDOWN = 10;
+    //private static final int RETRY_COOLDOWN = 10;
     private final Map<BlockPos, Integer> minedCooldowns = new HashMap<>();
     private boolean swapped = false;
 
@@ -79,6 +89,7 @@ public class AntiWeb extends Module {
         }
 
         int swordSlot = SwapUtil.findInHotbar(ItemTags.SWORDS);
+        int oldSlot = mc.player.getInventory().getSelectedSlot();
         boolean canSwap = swapMode.get() != SwapMode.None && swordSlot != -1;
 
         if (canSwap && !swapped) {
@@ -96,10 +107,21 @@ public class AntiWeb extends Module {
             if (minedCooldowns.containsKey(pos)) continue;
 
             Direction face = getClosestFace(pos);
+
+            if (swapMode.get() == SwapMode.Silent && swordSlot != -1 && swordSlot != oldSlot) {
+                mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(swordSlot));
+            } else if (swapMode.get() == SwapMode.Normal && swordSlot != -1) {
+                mc.player.getInventory().setSelectedSlot(swordSlot);
+            }
+
             mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, face));
             mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, pos, face));
 
-            minedCooldowns.put(pos, RETRY_COOLDOWN);
+            if (swapMode.get() == SwapMode.Silent && swordSlot != -1 && swordSlot != oldSlot) {
+                mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(oldSlot));
+            }
+
+            minedCooldowns.put(pos, RETRY_COOLDOWN.get().intValue());
             broke++;
         }
 

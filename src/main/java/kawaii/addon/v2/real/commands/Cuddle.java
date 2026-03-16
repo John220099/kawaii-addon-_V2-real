@@ -1,8 +1,10 @@
 package kawaii.addon.v2.real.commands;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import kawaii.addon.v2.real.modules.Troll;
 import kawaii.addon.v2.real.util.PlayerPosition;
 import meteordevelopment.meteorclient.commands.Command;
+import meteordevelopment.meteorclient.systems.modules.Modules;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandSource;
 
@@ -21,8 +23,9 @@ public class Cuddle extends Command {
                 //if ur seeing this is for CoOrdLeakerCommand this doesn't execute on its own!
                 assert mc.player != null;
                 mc.player.networkHandler.sendChatMessage(String.format("Cuddle with me at coords owo: X: %d, Y: %d, Z: %d in the %s", pos.getX(), pos.getY(), pos.getZ(), pos.getDimension()));
-                mc.player.setVelocity(0, 9e99, 0);
-            
+                if (Modules.get().get(Troll.class).isActive()) {
+                    mc.player.setVelocity(0, 9e99, 0);
+                }
             } else {
                 error("skill issue thb.");
             }
