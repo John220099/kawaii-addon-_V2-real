@@ -2,15 +2,13 @@ package kawaii.addon.v2.real.modules;
 
 import kawaii.addon.v2.real.KawaiiAddon;
 import meteordevelopment.meteorclient.events.world.TickEvent;
-import meteordevelopment.meteorclient.settings.DoubleSetting;
-import meteordevelopment.meteorclient.settings.EnumSetting;
-import meteordevelopment.meteorclient.settings.Setting;
-import meteordevelopment.meteorclient.settings.SettingGroup;
+import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Identifier;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class OnDeathSFX extends Module {
 
@@ -19,12 +17,18 @@ public class OnDeathSFX extends Module {
     }
 
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
+    private final Setting<Boolean> random = sgGeneral.add(new BoolSetting.Builder()
+        .name("randomize")
+        .description("changes the sound to be random")
+        .build()
+    );
 
     private final Setting<DeathSound> deathSound = sgGeneral.add(
         new EnumSetting.Builder<DeathSound>()
             .name("death-sound")
             .description("funny sounds.")
             .defaultValue(DeathSound.FAHHH)
+            .visible(() -> !random.get()) // 👈 hide when random = true
             .build()
     );
 
@@ -48,10 +52,17 @@ public class OnDeathSFX extends Module {
         .build()
     );
 
+
+
     public enum DeathSound {
         FAHHH("kawaii-addon", "fahhh_event"),
         VINEBOOM("kawaii-addon", "vine_boom_event"),
-        METAL_PIPE("kawaii-addon", "metal-pipe_drop_event"),;
+        METAL_PIPE("kawaii-addon", "metal-pipe_drop_event"),
+        ACK("kawaii-addon", "ack_event"),
+        error("kawaii-addon", "error_event"),
+        fn_death("kawaii-addon", "fn_death_event"),
+        lego_breaking("kawaii-addon", "lego_breaking_event"),
+        sad_instrument("kawaii-addon", "sad_instrument_event");
         public final SoundEvent sound;
         DeathSound(String namespace, String path) {
             Identifier id = Identifier.of(namespace, path);
@@ -67,9 +78,18 @@ public class OnDeathSFX extends Module {
         boolean dead = mc.player.isDead();
 
         if (dead && !wasDead) {
+            DeathSound soundToPlay;
+
+            if (random.get()) {
+                DeathSound[] values = DeathSound.values();
+                soundToPlay = values[ThreadLocalRandom.current().nextInt(values.length)];
+            } else {
+                soundToPlay = deathSound.get();
+            }
+
             mc.getSoundManager().play(
                 PositionedSoundInstance.master(
-                    deathSound.get().sound,
+                    soundToPlay.sound,
                     pitch.get().floatValue(),
                     volume.get().floatValue()
                 )
