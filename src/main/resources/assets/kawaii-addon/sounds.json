@@ -22,5 +22,35 @@
     "sounds": [
       "kawaii-addon:spinny"
     ]
+  },
+  "ack_event": {
+    "category": "player",
+    "sounds": [
+      "kawaii-addon:ack"
+    ]
+  },
+  "error_event": {
+    "category": "player",
+    "sounds": [
+      "kawaii-addon:error"
+    ]
+  },
+  "fn_death_event": {
+    "category": "player",
+    "sounds": [
+      "kawaii-addon:fn_death"
+    ]
+  },
+  "lego_breaking_event": {
+    "category": "player",
+    "sounds": [
+      "kawaii-addon:lego_breaking"
+    ]
+  },
+  "sad_instrument_event": {
+    "category": "player",
+    "sounds": [
+      "kawaii-addon:sad_instrument"
+    ]
   }
 }

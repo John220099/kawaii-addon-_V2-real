@@ -1,6 +1,7 @@
 package kawaii.addon.v2.real.modules;
 
 import kawaii.addon.v2.real.KawaiiAddon;
+import kawaii.addon.v2.real.util.PlayerPosition;
 import meteordevelopment.meteorclient.systems.config.Config;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
@@ -19,9 +20,9 @@ public class RockBreaker extends Module {
     @EventHandler
     private void onTick(TickEvent.Post event) {
         if (mc.player != null) {
-            int y = mc.player.getBlockY();
+            PlayerPosition pos = new PlayerPosition(mc);
+            int y = pos.getY();
 
-            assert mc.world != null;
             if (mc.world.getRegistryKey() == World.NETHER & y == 5) {
                 assert client.player != null;
                 String currentPrefix = Config.get().prefix.get();
