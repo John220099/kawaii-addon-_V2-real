@@ -5,9 +5,9 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.sound.PositionedSoundInstance;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class OnDeathSFX extends Module {
@@ -65,8 +65,8 @@ public class OnDeathSFX extends Module {
         sad_instrument("kawaii-addon", "sad_instrument_event");
         public final SoundEvent sound;
         DeathSound(String namespace, String path) {
-            Identifier id = Identifier.of(namespace, path);
-            this.sound = SoundEvent.of(id);
+            Identifier id = Identifier.fromNamespaceAndPath(namespace, path);
+            this.sound = SoundEvent.createVariableRangeEvent(id);
         }
     }
 
@@ -75,7 +75,7 @@ public class OnDeathSFX extends Module {
     @EventHandler
     private void onTick(TickEvent.Post event) {
         assert mc.player != null;
-        boolean dead = mc.player.isDead();
+        boolean dead = mc.player.isDeadOrDying();
 
         if (dead && !wasDead) {
             DeathSound soundToPlay;
@@ -88,7 +88,7 @@ public class OnDeathSFX extends Module {
             }
 
             mc.getSoundManager().play(
-                PositionedSoundInstance.master(
+                SimpleSoundInstance.forUI(
                     soundToPlay.sound,
                     pitch.get().floatValue(),
                     volume.get().floatValue()

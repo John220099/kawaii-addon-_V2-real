@@ -6,13 +6,13 @@ import meteordevelopment.meteorclient.events.world.TickEvent;
 import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.block.Blocks;
-import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
-import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.protocol.game.ServerboundPlayerActionPacket;
+import net.minecraft.network.protocol.game.ServerboundSetCarriedItemPacket;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.AABB;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +76,7 @@ public class AntiWeb extends Module {
 
     @EventHandler
     private void onTick(TickEvent.Pre event) {
-        if (mc.player == null || mc.world == null || mc.getNetworkHandler() == null) return;
+        if (mc.player == null || mc.level == null || mc.getConnection() == null) return;
 
         minedCooldowns.replaceAll((pos, ticks) -> ticks - 1);
         minedCooldowns.entrySet().removeIf(e -> e.getValue() <= 0);
@@ -109,16 +109,24 @@ public class AntiWeb extends Module {
             Direction face = getClosestFace(pos);
 
             if (swapMode.get() == SwapMode.Silent && swordSlot != -1 && swordSlot != oldSlot) {
-                mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(swordSlot));
+                mc.getConnection().send(new ServerboundSetCarriedItemPacket(swordSlot));
             } else if (swapMode.get() == SwapMode.Normal && swordSlot != -1) {
                 mc.player.getInventory().setSelectedSlot(swordSlot);
             }
 
-            mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, pos, face));
-            mc.getNetworkHandler().sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, pos, face));
+            //use for older versions
+            //mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, pos, face));
+            //mc.getConnection().send(new ServerboundPlayerActionPacket(ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK, pos, face));
+
+            mc.getConnection().send(new ServerboundPlayerActionPacket(
+                ServerboundPlayerActionPacket.Action.START_DESTROY_BLOCK, pos, face, 0
+            ));
+            mc.getConnection().send(new ServerboundPlayerActionPacket(
+                ServerboundPlayerActionPacket.Action.STOP_DESTROY_BLOCK, pos, face, 0
+            ));
 
             if (swapMode.get() == SwapMode.Silent && swordSlot != -1 && swordSlot != oldSlot) {
-                mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(oldSlot));
+                mc.getConnection().send(new ServerboundSetCarriedItemPacket(oldSlot));
             }
 
             minedCooldowns.put(pos, RETRY_COOLDOWN.get().intValue());
@@ -135,24 +143,24 @@ public class AntiWeb extends Module {
         List<BlockPos> webs = new ArrayList<>();
         double r = range.get();
 
-        Box bodyBox = mc.player.getBoundingBox().expand(r);
-        Box headBox = new Box(
+        AABB bodyBox = mc.player.getBoundingBox().inflate(r);
+        AABB headBox = new AABB(
             mc.player.getX() - r, mc.player.getEyeY() - r, mc.player.getZ() - r,
             mc.player.getX() + r, mc.player.getEyeY() + r, mc.player.getZ() + r
         );
 
         List<BlockPos> occupied = List.of(
-            BlockPos.ofFloored(mc.player.getX(), mc.player.getY(), mc.player.getZ()),
-            BlockPos.ofFloored(mc.player.getX(), mc.player.getY() + 0.5, mc.player.getZ()),
-            BlockPos.ofFloored(mc.player.getX(), mc.player.getEyeY(), mc.player.getZ())
+            BlockPos.containing(mc.player.getX(), mc.player.getY(), mc.player.getZ()),
+            BlockPos.containing(mc.player.getX(), mc.player.getY() + 0.5, mc.player.getZ()),
+            BlockPos.containing(mc.player.getX(), mc.player.getEyeY(), mc.player.getZ())
         );
 
-        BlockPos.stream(bodyBox.union(headBox))
-            .filter(pos -> mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB)
-            .forEach(pos -> webs.add(pos.toImmutable()));
+        BlockPos.betweenClosedStream(bodyBox.minmax(headBox))
+            .filter(pos -> mc.level.getBlockState(pos).getBlock() == Blocks.COBWEB)
+            .forEach(pos -> webs.add(pos.immutable()));
 
         for (BlockPos pos : occupied) {
-            if (mc.world.getBlockState(pos).getBlock() == Blocks.COBWEB && !webs.contains(pos)) {
+            if (mc.level.getBlockState(pos).getBlock() == Blocks.COBWEB && !webs.contains(pos)) {
                 webs.add(pos);
             }
         }

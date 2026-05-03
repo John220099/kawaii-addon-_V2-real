@@ -10,12 +10,12 @@ import meteordevelopment.meteorclient.systems.hud.Hud;
 import meteordevelopment.meteorclient.systems.hud.HudGroup;
 import meteordevelopment.meteorclient.systems.modules.Category;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
 
 public class KawaiiAddon extends MeteorAddon {
     public static final Logger LOG = LogUtils.getLogger();
-    public static final Category CATEGORY = new Category("Kawaii", Items.PINK_DYE.getDefaultStack());
+    public static final Category CATEGORY = new Category("Kawaii", Items.PINK_DYE.getDefaultInstance());
     public static final HudGroup HUD_GROUP = new HudGroup("Kawaii");
 
     @Override
@@ -30,7 +30,7 @@ public class KawaiiAddon extends MeteorAddon {
         Modules.get().add(new MapCensor());
         Modules.get().add(new Troll());
         Modules.get().add(new RockBreaker());
-        //Modules.get().add(new CoordSpoofer());
+        Modules.get().add(new CoordSpoofer());
         Modules.get().add(new AntiWeb());
         Modules.get().add(new SwordSwap());
         Modules.get().add(new OnDeathSFX());
