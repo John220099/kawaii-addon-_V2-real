@@ -10,9 +10,8 @@ import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.utils.render.color.Color;
 import meteordevelopment.meteorclient.utils.render.color.SettingColor;
 import meteordevelopment.orbit.EventHandler;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.option.Perspective;
-
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -407,20 +406,20 @@ public class ChinaHat extends Module {
 
     @EventHandler
     private void onRender3D(Render3DEvent event) {
-        MinecraftClient mc = MinecraftClient.getInstance();
+        Minecraft mc = Minecraft.getInstance();
         if (mc.player == null) return;
-        if (mc.options.getPerspective() == Perspective.FIRST_PERSON) return;
+        if (mc.options.getCameraType() == CameraType.FIRST_PERSON) return;
 
         long now = System.currentTimeMillis();
         if (startTime < 0) startTime = now;
         double elapsed = (now - startTime) / 1000.0;
 
-        double x = mc.player.lastRenderX + (mc.player.getX() - mc.player.lastRenderX) * event.tickDelta;
-        double y = mc.player.lastRenderY + (mc.player.getY() - mc.player.lastRenderY) * event.tickDelta + mc.player.getHeight() + yOffsetSetting.get();
-        double z = mc.player.lastRenderZ + (mc.player.getZ() - mc.player.lastRenderZ) * event.tickDelta;
-        double bodyY = mc.player.lastRenderY + (mc.player.getY() - mc.player.lastRenderY) * event.tickDelta;
-        double headY = bodyY + mc.player.getHeight();
-        double headYaw = Math.toRadians(mc.player.getHeadYaw());
+        double x = mc.player.xOld + (mc.player.getX() - mc.player.xOld) * event.tickDelta;
+        double y = mc.player.yOld + (mc.player.getY() - mc.player.yOld) * event.tickDelta + mc.player.getBbHeight() + yOffsetSetting.get();
+        double z = mc.player.zOld + (mc.player.getZ() - mc.player.zOld) * event.tickDelta;
+        double bodyY = mc.player.yOld + (mc.player.getY() - mc.player.yOld) * event.tickDelta;
+        double headY = bodyY + mc.player.getBbHeight();
+        double headYaw = Math.toRadians(mc.player.getYHeadRot());
 
         float coneRadius = coneRadiusSetting.get().floatValue();
         float coneHeight = coneHeightSetting.get().floatValue();

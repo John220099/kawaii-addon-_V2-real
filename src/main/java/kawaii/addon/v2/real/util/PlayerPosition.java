@@ -1,12 +1,12 @@
 package kawaii.addon.v2.real.util;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.Minecraft;
 
 public class PlayerPosition {
 
-    private final MinecraftClient mc;
+    private final Minecraft mc;
 
-    public PlayerPosition(MinecraftClient mc) {
+    public PlayerPosition(Minecraft mc) {
         this.mc = mc;
     }
 
@@ -27,6 +27,6 @@ public class PlayerPosition {
     }
 
     public String getDimension() {
-        return mc.world.getRegistryKey().getValue().getPath();
+        return mc.level.dimension().identifier().getPath();
     }
 }

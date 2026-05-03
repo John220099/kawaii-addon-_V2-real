@@ -9,7 +9,7 @@ import meteordevelopment.meteorclient.systems.hud.HudElement;
 import meteordevelopment.meteorclient.systems.hud.HudElementInfo;
 import meteordevelopment.meteorclient.systems.hud.HudRenderer;
 import meteordevelopment.meteorclient.utils.render.color.Color;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.Identifier;
 
 public class Cat extends HudElement {
     public static final HudElementInfo<Cat> INFO = new HudElementInfo<>(KawaiiAddon.HUD_GROUP, "cat-hud", "Displays a cat icon.", Cat::new);
@@ -41,7 +41,7 @@ public class Cat extends HudElement {
         .build()
     );
 
-    private final Setting<Picture> mode = sg.add(new EnumSetting.Builder<Cat.Picture>()
+    private final Setting<Picture> mode = sg.add(new EnumSetting.Builder<Picture>()
         .name("picture")
         .description("set the picture you want.")
         .defaultValue(Picture.Cat1)
@@ -57,20 +57,20 @@ public class Cat extends HudElement {
     @Override
     public void render(HudRenderer renderer) {
         switch (mode.get()) {
-            case Cat1 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat1.png");
-            case Cat2 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat2.png");
-            case Cat3 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat3.png");
-            case Cat4 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat4.png");
-            case Cat5 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat5.png");
-            case Cat6 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat6.png");
-            case Cat7 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat7.png");
-            case Cat8 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat8.png");
-            case Cat9 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat9.png");
-            case Cat10 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat10.png");
-            case Cat11 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat11.png");
-            case Cat12 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat12.png");
-            case Cat13 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat13.png");
-            case Cat14 -> TEXTURE = Identifier.of("kawaii-addon", "hud/cat14.png");
+            case Cat1 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat1.png");
+            case Cat2 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat2.png");
+            case Cat3 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat3.png");
+            case Cat4 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat4.png");
+            case Cat5 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat5.png");
+            case Cat6 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat6.png");
+            case Cat7 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat7.png");
+            case Cat8 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat8.png");
+            case Cat9 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat9.png");
+            case Cat10 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat10.png");
+            case Cat11 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat11.png");
+            case Cat12 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat12.png");
+            case Cat13 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat13.png");
+            case Cat14 -> TEXTURE = Identifier.fromNamespaceAndPath("kawaii-addon", "hud/cat14.png");
         }
         int x_width = width.get();
         int y_height = height.get();

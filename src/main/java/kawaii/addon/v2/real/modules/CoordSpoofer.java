@@ -2,9 +2,8 @@ package kawaii.addon.v2.real.modules;
 
 import kawaii.addon.v2.real.KawaiiAddon;
 import meteordevelopment.meteorclient.systems.modules.Module;
+import net.minecraft.util.RandomSource;
 import meteordevelopment.meteorclient.settings.*;
-
-import net.minecraft.util.math.random.Random;
 
 public class CoordSpoofer extends Module {
 
@@ -13,7 +12,7 @@ public class CoordSpoofer extends Module {
     public final Setting<Integer> seed = sgGeneral.add(new IntSetting.Builder()
         .name("seed")
         .description("Seed used to offset coordinates.")
-        .defaultValue(Random.create().nextBetween(-1000000, 1000000))
+        .defaultValue(RandomSource.create().nextIntBetweenInclusive(-1000000, 1000000))
         .min(0)
         .sliderMax(1000000)
         .build()

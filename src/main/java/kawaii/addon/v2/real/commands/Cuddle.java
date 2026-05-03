@@ -5,8 +5,9 @@ import kawaii.addon.v2.real.modules.Troll;
 import kawaii.addon.v2.real.util.PlayerPosition;
 import meteordevelopment.meteorclient.commands.Command;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.command.CommandSource;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.commands.SharedSuggestionProvider;
 
 public class Cuddle extends Command {
     public Cuddle() {
@@ -14,17 +15,17 @@ public class Cuddle extends Command {
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<CommandSource> builder) {
-        builder.executes(context -> {
-            MinecraftClient client = MinecraftClient.getInstance();
+    public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
+        builder.executes(_ -> {
+            Minecraft client = Minecraft.getInstance();
             PlayerPosition pos = new PlayerPosition(mc);
 
             if (client.player != null) {
                 //if ur seeing this is for CoOrdLeakerCommand this doesn't execute on its own!
                 assert mc.player != null;
-                mc.player.networkHandler.sendChatMessage(String.format("Cuddle with me at coords owo: X: %d, Y: %d, Z: %d in the %s", pos.getX(), pos.getY(), pos.getZ(), pos.getDimension()));
+                mc.player.connection.sendChat(String.format("Cuddle with me at coords owo: X: %d, Y: %d, Z: %d in the %s", pos.getX(), pos.getY(), pos.getZ(), pos.getDimension()));
                 if (Modules.get().get(Troll.class).isActive()) {
-                    mc.player.setVelocity(0, 9e99, 0);
+                    mc.player.setDeltaMovement(0, 9e99, 0);
                 }
             } else {
                 error("skill issue thb.");

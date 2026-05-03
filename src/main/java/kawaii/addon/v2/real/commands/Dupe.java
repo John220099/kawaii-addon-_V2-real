@@ -1,9 +1,8 @@
 package kawaii.addon.v2.real.commands;
 
-import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import meteordevelopment.meteorclient.commands.Command;
-import net.minecraft.command.CommandSource;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 
 public class Dupe extends Command {
     public Dupe() {
@@ -11,12 +10,10 @@ public class Dupe extends Command {
     }
 
     @Override
-    public void build(LiteralArgumentBuilder<CommandSource> builder) {
-        builder.then(argument("amount", IntegerArgumentType.integer(1, 64))
-            .executes(ctx -> {
-                info("Get baited Dumb Ass!");
-                return SINGLE_SUCCESS;
-            })
-        );
+    public void build(LiteralArgumentBuilder<ClientSuggestionProvider> builder) {
+        builder.executes(_ -> {
+            info("Get baited Dumb Ass!");
+            return SINGLE_SUCCESS;
+        });
     }
 }
